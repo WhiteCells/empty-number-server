@@ -1,0 +1,11 @@
+uvicorn
+litestar
+litestar[standard]
+pydantic
+pydantic[email]
+passlib
+# litestar-jinja2
+redis
+pydantic-settings
+bcrypt
+sqlalchemy
