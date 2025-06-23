@@ -19,4 +19,11 @@ uvicorn
 uvicorn app:app --reload
 ```
 
+### 数据库表迁移
 
+数据库表迁移
+
+```sh
+alembic revision --autogenerate -m "comment"
+alembic upgrade head
+```

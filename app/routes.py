@@ -1,10 +1,14 @@
 from litestar import Router
-from app.controllers.user_controller import UserController
-from app.controllers.empty_number_controller import EmptyNumberController
-
-# user_router = Router(path="/api", route_handlers=[UserController])
+from app.controllers.dialplan import DialplanController
+from app.controllers.account import AccountController
+from app.controllers.api import ApiController
 
 routes = [
-    Router(path="/api", route_handlers=[EmptyNumberController]),
-    Router(path="/api/users", route_handlers=[UserController])
+    Router(path="/api", route_handlers=[
+        DialplanController,
+        AccountController,
+    ]),
+    Router(path="/voip", route_handlers=[
+        ApiController,
+    ]),
 ]
