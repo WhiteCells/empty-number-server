@@ -1,0 +1,36 @@
+32621:C 24 Jun 2025 09:23:22.057 # WARNING: Changing databases number from 16 to 1 since we are in cluster mode
+32621:C 24 Jun 2025 09:23:22.057 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+32627:C 24 Jun 2025 09:23:22.057 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+32627:C 24 Jun 2025 09:23:22.057 * Redis version=8.0.2, bits=64, commit=d058b7d3, modified=0, pid=32627, just started
+32627:C 24 Jun 2025 09:23:22.057 * Configuration loaded
+32627:M 24 Jun 2025 09:23:22.058 * monotonic clock: POSIX clock_gettime
+32627:M 24 Jun 2025 09:23:22.058 # Failed to write PID file: Permission denied
+32627:M 24 Jun 2025 09:23:22.058 * Running mode=cluster, port=7000.
+32627:M 24 Jun 2025 09:23:22.058 * No cluster configuration found, I'm ba47553e3e8f94fec7f9694793dae28c89553dbe
+32627:M 24 Jun 2025 09:23:22.065 * Server initialized
+32627:M 24 Jun 2025 09:23:22.067 * Creating AOF base file appendonly.aof.1.base.rdb on server start
+32627:M 24 Jun 2025 09:23:22.073 * Creating AOF incr file appendonly.aof.1.incr.aof on server start
+32627:M 24 Jun 2025 09:23:22.073 * Ready to accept connections tcp
+32627:M 24 Jun 2025 09:23:31.459 * configEpoch set to 1 via CLUSTER SET-CONFIG-EPOCH
+32627:M 24 Jun 2025 09:23:31.504 * IP address for this node updated to 127.0.0.1
+32627:M 24 Jun 2025 09:23:32.462 * Replica 127.0.0.1:7005 asks for synchronization
+32627:M 24 Jun 2025 09:23:32.462 * Partial resynchronization not accepted: Replication ID mismatch (Replica asked for '503be0ca4079a71d8f950d23de3479e6a1076625', my replication IDs are '01ad79c5ee73316494da0eb56956a26ea75babad' and '0000000000000000000000000000000000000000')
+32627:M 24 Jun 2025 09:23:32.462 * Replication backlog created, my new replication IDs are '7c0009738364cd50054be8500ddf09c41001879d' and '0000000000000000000000000000000000000000'
+32627:M 24 Jun 2025 09:23:32.462 * Replica 127.0.0.1:7005 is capable of rdb channel synchronization, and partial sync isn't possible. Full sync will continue with dedicated rdb channel.
+32627:M 24 Jun 2025 09:23:32.463 * Replica 127.0.0.1:7005 asks for synchronization
+32627:M 24 Jun 2025 09:23:32.463 * Full resync requested by replica 127.0.0.1:7005 (rdb-channel)
+32627:M 24 Jun 2025 09:23:32.463 * Delay next BGSAVE for diskless SYNC
+32627:M 24 Jun 2025 09:23:33.016 * Node afa01b8bed78c0a23f26bc7b0fa706270d062956 () is no longer master of shard cf3ae5d2b41e91952c4f4815d4e964f9385033d6; removed all 0 slot(s) it used to own
+32627:M 24 Jun 2025 09:23:33.016 * Node afa01b8bed78c0a23f26bc7b0fa706270d062956 () is now part of shard 86461f9c69171fe6f7418f3e41ade352fe2fc4ab
+32627:M 24 Jun 2025 09:23:34.016 * Node 45dbfee99d3262522d558ac6251c488c55e2d9f3 () is no longer master of shard 9a478efccdd3a67a52fe2bdf242e8f321363ec88; removed all 0 slot(s) it used to own
+32627:M 24 Jun 2025 09:23:34.016 * Node 45dbfee99d3262522d558ac6251c488c55e2d9f3 () is now part of shard 3d7c840938eda0af9d0940fd21060a8a040ad2d1
+32627:M 24 Jun 2025 09:23:34.020 * Node c85a59b53b68873aff415e9c4bfb6fb8fcd0b54f () is no longer master of shard 38a0b500a86576738df61dbc846deb974564abcc; removed all 0 slot(s) it used to own
+32627:M 24 Jun 2025 09:23:34.020 * Node c85a59b53b68873aff415e9c4bfb6fb8fcd0b54f () is now part of shard 6b8add56e8e7cee68549da1f760b1624e0c86b01
+32627:M 24 Jun 2025 09:23:36.423 * Cluster state changed: ok
+32627:M 24 Jun 2025 09:23:37.126 * Starting BGSAVE for SYNC with target: replicas sockets (rdb-channel)
+32627:M 24 Jun 2025 09:23:37.126 * Starting to deliver RDB and replication stream to replica: 127.0.0.1:7005
+32627:M 24 Jun 2025 09:23:37.126 * Background RDB transfer started by pid 33237 to replica socket
+33237:C 24 Jun 2025 09:23:37.127 * Fork CoW for RDB: current 0 MB, peak 0 MB, average 0 MB
+32627:M 24 Jun 2025 09:23:37.136 * Synchronization with replica 127.0.0.1:7005 succeeded
+32627:M 24 Jun 2025 09:23:37.139 * Connection with replica (rdbchannel) 127.0.0.1:7005 lost.
+32627:M 24 Jun 2025 09:23:37.227 * Background RDB transfer terminated with success

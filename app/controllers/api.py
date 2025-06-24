@@ -25,7 +25,7 @@ class ApiController(Controller):
         """
         获取指定客户端的分机分配的计划接口
         """
-        dialplan_service.get_dialplan(client_id)
+        res, msg = await dialplan_service.get_dialplan(client_id)
         return jsonify(200, "", "")
 
     @get("/account/{client_id:str}")
@@ -55,7 +55,7 @@ class ApiController(Controller):
     async def dialplan_status(self, client_id: str) -> Response:
         """
         客户端拨号状态
-        更新客户端在数据库中的状态
+        检查当前通话所在的任务的所有通话是否都完成，如果都完成，则更新任务状态
         """
         return jsonify(200, "", "")
     

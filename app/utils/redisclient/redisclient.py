@@ -2,6 +2,9 @@ from typing import AsyncGenerator
 from redis.asyncio import Redis
 import redis.asyncio as aioredis
 from app.config import Config
+from redis.cluster import ClusterNode, RedisCluster
+import threading
+
 
 redis_client = aioredis.from_url(url=Config.REDIS_URL(),
                          max_connections=Config.REDIS_MAX_CONN,
@@ -9,3 +12,4 @@ redis_client = aioredis.from_url(url=Config.REDIS_URL(),
 
 async def provide_redis_client() -> AsyncGenerator[Redis, None]:
     yield redis_client
+
