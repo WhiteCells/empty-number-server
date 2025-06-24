@@ -24,4 +24,4 @@ class Client(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="创建时间")
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
 
-    accounts: Mapped[List["Account"]] = relationship("Account", back_populates="client")
+    # accounts: Mapped[List["Account"]] = relationship("Account", back_populates="client")

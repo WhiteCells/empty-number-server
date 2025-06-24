@@ -21,6 +21,7 @@ class Account(Base):
     status: Mapped[str] = mapped_column(String(10), nullable=False, default=AccountStatus.Free, comment="状态")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="创建时间")
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+    expired_at: Mapped[datetime] = mapped_column(DateTime, nullable=True, comment="到期时间")
 
-    client_id: Mapped[int] = mapped_column(ForeignKey("client.id"), nullable=True, comment="所属客户端 ID")
-    client: Mapped["Client"] = relationship("Client", back_populates="accounts")
+    # client_id: Mapped[int] = mapped_column(ForeignKey("client.id"), nullable=True, comment="所属客户端 ID")
+    # client: Mapped["Client"] = relationship("Client", back_populates="accounts")

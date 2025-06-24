@@ -6,12 +6,13 @@ from app.dto.client import CreateClientDto, PutClientDto
 from app.models.client import Client, ClientStatus
 from app.utils.logger import logger
 from app.dto.api import NotifyDto
-
+from datetime import timedelta
+from app.utils.redisclient.cluster_client import get_redis_cluster_client
 
 class ClientRepository:
-    def __init__(self, db_session: AsyncSession, redis_client: Redis) -> None:
+    def __init__(self, db_session: AsyncSession) -> None:
         self._db_session = db_session
-        self._redis_client = redis_client
+        self._redis_client = get_redis_cluster_client()
 
     async def notify(self, client_id: str, data: NotifyDto) -> tuple[dict, str]:
         # 判断 client 是否存在，这个 client_id 是 uuid，不是 id
@@ -51,6 +52,11 @@ class ClientRepository:
         )
         return res.scalar_one_or_none()
     
+    async def heartbeat(self, client_id: str):
+        # 更新客户端 Redis 状态
+        self._redis_client.set(f"client:{client_id}", "online", ex=timedelta(seconds=10))
+        return True
+    
     async def _update_client_redis(self, uuid: str, status: str, threads_num: int):
         key = f"client:{uuid}"
         await self._redis_client.hset(key, mapping={
@@ -63,5 +69,5 @@ class ClientRepository:
         key = f"client:{uuid}"
         return await self._redis_client.hgetall(key)
 
-async def provide_client_repository(db_session: AsyncSession, redis_client: Redis) -> AsyncGenerator[ClientRepository, None]:
-    yield ClientRepository(db_session, redis_client)
+async def provide_client_repository(db_session: AsyncSession) -> AsyncGenerator[ClientRepository, None]:
+    yield ClientRepository(db_session)

@@ -27,8 +27,8 @@ class AccountController(Controller):
 
     @get(path="/account/{id:int}", status_code=HTTP_200_OK)
     async def get_account(self, id: int, account_service: AccountService) -> Response:
-        data, msg = await account_service.get_account(id)
-        return jsonify(200, "", "")
+        account, msg = await account_service.get_account(id)
+        return jsonify(200, account, msg)
 
     @get(path="/accounts", status_code=HTTP_200_OK)
     async def get_accounts(self) -> Response:

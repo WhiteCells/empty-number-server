@@ -13,5 +13,6 @@ class DialplanService:
     async def get_dialplan(self, client_id) -> tuple[dict, str]:
         return await self._dialplan_repository.get_dialplan(client_id)
 
+
 async def provide_dialplan_service(dialplan_repository: DialplanRepository) -> AsyncGenerator[DialplanService, None]:
     yield DialplanService(dialplan_repository)

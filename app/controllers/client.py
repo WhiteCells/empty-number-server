@@ -17,13 +17,20 @@ class ClientController(Controller):
         return jsonify(200, "", "")
 
     @delete(path="/client/{id:int}", status_code=HTTP_200_OK)
-    async def delete_client(self, id: int) -> Response:
+    async def delete_client(self, id: int, client_service: ClientService) -> Response:
+        await client_service.delete_client(id)
         return jsonify(200, "", "")
 
     @put(path="/client/{id:int}", status_code=HTTP_200_OK)
     async def put_client(self, id: int, data: PutClientDto) -> Response:
         return jsonify(200, "", "")
+    
+    @get(path="/client/{id:int}", status_code=HTTP_200_OK)
+    async def get_client_by_id(self, id: int, client_service: ClientService) -> Response:
+        client, msg = await client_service.get_client_by_id(id)
+        return jsonify(200, client, msg)
 
     @get(path="/clients", status_code=HTTP_200_OK)
-    async def get_clients(self) -> Response:
-        return jsonify(200, "", "")
+    async def get_clients(self, client_service: ClientService) -> Response:
+        clients, msg = await client_service.get_clients()
+        return jsonify(200, clients, msg)

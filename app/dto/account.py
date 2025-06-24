@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class Account(BaseModel):
@@ -18,6 +19,19 @@ class CreateAccountResponseDto(BaseModel):
     host: str = None
     name: str = None
     pwd: str = None
+    model_config = {
+        "from_attributes": True
+    }
+
+class GetAccountResponseDto(BaseModel):
+    id: int
+    name: str
+    pwd: str
+    host: str
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    expired_at: datetime
     model_config = {
         "from_attributes": True
     }

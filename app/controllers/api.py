@@ -31,25 +31,29 @@ class ApiController(Controller):
     @get("/account/{client_id:str}")
     async def get_account(self, client_id: str, account_service: AccountService) -> Response:
         """
-        获取客户端对应的账号信息
+        获取空闲或未使用的账号信息
         """
-        # account_service
-        return jsonify(200, "", "")
+        res, msg = await account_service.get_free_account(client_id)
+        return jsonify(200, res, msg)
 
     @post("/account/reg_status/{client_id:str}")
     async def reg_status(self, client_id: str) -> Response:
         """
         客户端注册账号状态
+        {
+            "": "",
+        }
         """
         return jsonify(200, "", "")
 
     @post("/heartbeat/{client_id:str}")
-    async def heartbeat(self, client_id: str) -> Response:
+    async def heartbeat(self, client_id: str, client_service: ClientService) -> Response:
         """
         心跳接口
         更新客户端在 redis 中的状态
         """
-        return jsonify(200, "", "")
+        res = await client_service.heartbeat(client_id)
+        return jsonify(200, res, "")
     
     @post("/dialplan/status/{client_id:str}")
     async def dialplan_status(self, client_id: str) -> Response:
