@@ -28,6 +28,7 @@ class Dialplan(Base):
     result: Mapped[str] = mapped_column(String(20), nullable=True, comment="空号识别结果")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="创建时间")
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+    expired_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="过期时间")
 
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id"))
     task: Mapped["Task"] = relationship("Task", back_populates="dialplans")

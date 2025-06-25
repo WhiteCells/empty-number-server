@@ -15,6 +15,10 @@ class PutAccountDto(BaseModel):
     name: str = None
     pwd: str = None
 
+class PutAccountRegStatusDto(BaseModel):
+    account_id: int
+    status: str
+
 class CreateAccountResponseDto(BaseModel):
     host: str = None
     name: str = None

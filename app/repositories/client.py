@@ -2,12 +2,13 @@ from typing import AsyncGenerator
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
-from app.dto.client import CreateClientDto, PutClientDto
+from app.dto.client import CreateClientDto, PutClientDto, GetClientDto, GetClientsQueryDto
 from app.models.client import Client, ClientStatus
 from app.utils.logger import logger
 from app.dto.api import NotifyDto
 from datetime import timedelta
 from app.utils.redisclient.cluster_client import get_redis_cluster_client
+
 
 class ClientRepository:
     def __init__(self, db_session: AsyncSession) -> None:
@@ -15,9 +16,12 @@ class ClientRepository:
         self._redis_client = get_redis_cluster_client()
 
     async def notify(self, client_id: str, data: NotifyDto) -> tuple[dict, str]:
-        # 判断 client 是否存在，这个 client_id 是 uuid，不是 id
         try:
-            client = await self.get_client_by_uuid(client_id)
+            # 判断 client 是否存在，这个 client_id 是 uuid，不是 id
+            res = await self._db_session.execute(
+                select(Client).where(Client.uuid == client_id)
+            )
+            client = res.scalar_one_or_none()
             if not client:
                 # 新增 client
                 client = Client(
@@ -36,34 +40,54 @@ class ClientRepository:
             logger.info(f"client {client.id} notify")
 
             # 新增或更新 client 的 redis 记录
-            await self._update_client_redis(
+            self._update_client_redis(
                 client_id, 
-                ClientStatus.Online, 
-                data.threads_num)
+                ClientStatus.Online)
 
             return {"client_id": client.id}, None
         except Exception as e:
             await self._db_session.rollback()
             return None, f"接收客户端通知失败{e}"
 
+    async def get_clients(self, query: GetClientsQueryDto) -> dict:
+        return {}
+        # offset = (query.page - 1) * query.size
+        # limit = query.size
+        # clients, total = await self._client_repository.get_clients(offset=offset, limit=limit)
+        # if not clients:
+        #     return {"clients": [], "total": total}, "No clients found"
+        # return {"clients": clients, "total": total}, None
+
     async def get_client_by_uuid(self, uuid: str) -> dict:
         res = await self._db_session.execute(
             select(Client).where(Client.uuid == uuid)
         )
-        return res.scalar_one_or_none()
+        client = res.scalar_one_or_none()
+        if client is None:
+            return None
+        client_dict = GetClientDto.model_validate(client).model_dump()
+        return client_dict
     
-    async def heartbeat(self, client_id: str):
-        # 更新客户端 Redis 状态
-        self._redis_client.set(f"client:{client_id}", "online", ex=timedelta(seconds=10))
+    async def heartbeat(self, client_id: str) -> bool:
+        self._update_client_redis(client_id, ClientStatus.Online)
         return True
     
-    async def _update_client_redis(self, uuid: str, status: str, threads_num: int):
+    async def get_client_by_id(self, id: int) -> dict:
+        res = await self._db_session.execute(
+            select(Client).where(Client.id == id)
+        )
+        client = res.scalar_one_or_none()
+        if not client:
+            return None
+        client_dict = GetClientDto.model_validate(client).model_dump()
+        return client_dict
+    
+    def _update_client_redis(self, uuid: str, status: str):
         key = f"client:{uuid}"
-        await self._redis_client.hset(key, mapping={
-            "status": status,
-            "threads_num": threads_num
+        self._redis_client.hset(key, mapping={
+            "status": status
         })
-        await self._redis_client.expire(key, 10)
+        self._redis_client.expire(key, 10)
 
     async def _get_client_redis(self, uuid: str):
         key = f"client:{uuid}"

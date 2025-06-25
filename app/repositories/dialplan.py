@@ -8,11 +8,13 @@ from app.utils.logger import logger
 import datetime
 from app.models.dialplan import DialplanStatus
 from app.models.task import Task
+from app.utils.dialplan_queue import get_dialplan_queue
 
 
 class DialplanRepository:
     def __init__(self, db_session: AsyncSession) -> None:
         self._db_session = db_session
+        self._dialplan_queue = get_dialplan_queue()
 
     async def create_dialplan(self, data: CreateDialplanDto) -> tuple[dict, str]:
         task = None
@@ -36,6 +38,9 @@ class DialplanRepository:
                     self._db_session.add(dialplan)
                     await self._db_session.flush()
                     dialplans.append(CreateDialplanResponseDto.model_validate(dialplan))
+                    # phones.append(phone)
+                    # 添加进 dialplan 队列
+                    self._dialplan_queue.put("dialplan", phone)
             return {
                 "task_id": task.id,
                 "dialplans": dialplans,
@@ -46,9 +51,12 @@ class DialplanRepository:
             await self._db_session.rollback()
             return None, f"创建任务失败 {e}"
     
-    async def get_dialplan(self, client_id) -> tuple[dict, str]:
-        pass
+    async def get_dialplan(self, threads_num) -> tuple[dict, str]:
+        # 从队列中取出 threads_num 个 dialplan
+        dialplan = self._dialplan_queue.get("dialplan", threads_num)
+        return {"dialplans": dialplan}, None
 
+    # async def update_dialplan_status(self, client_id: )
 
 async def provide_dialplan_repository(db_session: AsyncSession) -> AsyncGenerator[DialplanRepository, None]:
     yield DialplanRepository(db_session)

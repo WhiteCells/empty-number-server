@@ -14,11 +14,13 @@ class AccountController(Controller):
         return jsonify(200, res, msg)
 
     @post(path="/account/upload_file", status_code=HTTP_200_OK)
-    async def upload_file(self, request: Request) -> Response:
+    async def upload_file(self, request: Request, account_service: AccountService) -> Response:
+        # res, msg = await account_service.upload_file(request)
         return jsonify(200, "", "")
 
     @delete(path="/account/{id:int}", status_code=HTTP_200_OK)
-    async def delete_account(self, id: int) -> Response:
+    async def delete_account(self, id: int, account_service: AccountService) -> Response:
+        res, msg = await account_service.delete_account(id)
         return jsonify(200, "", "")
 
     @put(path="/account/{id:int}", status_code=HTTP_200_OK)

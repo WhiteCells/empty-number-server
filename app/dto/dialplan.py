@@ -6,7 +6,13 @@ class CreateDialplanDto(BaseModel):
     return_url: str
 
 class PutDialplanDto(BaseModel):
+    account_id: int
     phone: str
+    status: str
+
+class DialplanStatusDto(BaseModel):
+    account_id: int
+    status: str
 
 class CreateDialplanResponseDto(BaseModel):
     id: int

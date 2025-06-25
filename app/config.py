@@ -7,6 +7,7 @@ class Config:
     DEBUG: bool = True
     WORKERS: int = 3
 
+    # Server 配置
     SERVER_HOST: str = os.getenv("SERVER_HOST")
     SERVER_PORT: int = int(os.getenv("SERVER_PORT"))
 
@@ -27,36 +28,13 @@ class Config:
     REDIS_PASS: str = os.getenv("REDIS_PASS")
     REDIS_MAX_CONN: int = 50
 
+    # WAV UPLOAD 配置
+    UPLOADS_DIR: str = "uploads"
+
     # Logger 配置
     LOG_LEVEL: str = "DEBUG"
     LOG_DIR: str = "logs"
     LOG_BACKUP_COUNT: int = 7
-    """
-    %(name)s            Name of the logger (logging channel)
-    %(levelno)s         Numeric logging level for the message (DEBUG, INFO,
-                        WARNING, ERROR, CRITICAL)
-    %(levelname)s       Text logging level for the message ("DEBUG", "INFO",
-                        "WARNING", "ERROR", "CRITICAL")
-    %(pathname)s        Full pathname of the source file where the logging
-                        call was issued (if available)
-    %(filename)s        Filename portion of pathname
-    %(module)s          Module (name portion of filename)
-    %(lineno)d          Source line number where the logging call was issued
-                        (if available)
-    %(funcName)s        Function name
-    %(created)f         Time when the LogRecord was created (time.time()
-                        return value)
-    %(asctime)s         Textual time when the LogRecord was created
-    %(msecs)d           Millisecond portion of the creation time
-    %(relativeCreated)d Time in milliseconds when the LogRecord was created,
-                        relative to the time the logging module was loaded
-                        (typically at application startup time)
-    %(thread)d          Thread ID (if available)
-    %(threadName)s      Thread name (if available)
-    %(process)d         Process ID (if available)
-    %(message)s         The result of record.getMessage(), computed just as
-                        the record is emitted
-    """
     LOG_FORMAT: str = "[%(asctime)s] [%(levelname)s] [Thread ID: %(thread)d] [%(filename)s:%(lineno)d] %(message)s"
 
     @staticmethod

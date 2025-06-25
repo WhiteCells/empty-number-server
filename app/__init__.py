@@ -4,6 +4,7 @@ from app.dependencies import dependencies
 from app.config import Config
 # from app.middleware.jwt import JWTAuthenticationMiddleware
 
+
 app = Litestar(
     route_handlers=routes,
     dependencies=dependencies,

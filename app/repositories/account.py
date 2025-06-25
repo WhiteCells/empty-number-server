@@ -1,5 +1,5 @@
 from typing import AsyncGenerator
-from sqlalchemy import select, delete, or_, and_
+from sqlalchemy import select, delete, update, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 from app.dto.account import CreateAccountDto, PutAccountDto, CreateAccountResponseDto, GetAccountResponseDto
@@ -30,6 +30,12 @@ class AccountRepository:
         except Exception as e:
             logger.error(e)
             return None, f"创建账户失败 {e}"
+        
+    async def delete_account(self, id: int) -> bool:
+        result = await self._db_session.execute(
+            delete(Account).where(Account.id == id)
+        )
+        return result.rowcount > 0
         
     async def get_free_account(self, count: int) -> tuple[dict, str]:
         """
@@ -88,8 +94,13 @@ class AccountRepository:
         更新账号状态
         """
         try:
-            async with self._db_session.begin():
-                pass
+            await self._db_session.execute(
+                update(Account)
+                .where(Account.id == account_id)
+                .values(status=status)
+                .execution_options(synchronize_session="fetch")
+            )
+            return {"account_id": account_id, "status": status}
         except Exception as e:
             logger.error(e)
             return None, f"更新账号状态失败 {e}"
