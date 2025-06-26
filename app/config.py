@@ -35,7 +35,7 @@ class Config:
     LOG_LEVEL: str = "DEBUG"
     LOG_DIR: str = "logs"
     LOG_BACKUP_COUNT: int = 7
-    LOG_FORMAT: str = "[%(asctime)s] [%(levelname)s] [Thread ID: %(thread)d] [%(filename)s:%(lineno)d] %(message)s"
+    LOG_FORMAT: str = "[%(asctime)s] [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s"
 
     @staticmethod
     def DATABASE_URL() -> str:

@@ -4,6 +4,9 @@ from app.utils.redisclient.cluster_client import get_redis_cluster_client
 
 
 class DialplanQueue:
+
+    maxsize = 100
+
     def __init__(self):
         self.client = get_redis_cluster_client()
         self._lock = threading.Lock()

@@ -40,7 +40,7 @@ class DialplanRepository:
                     dialplans.append(CreateDialplanResponseDto.model_validate(dialplan))
                     # phones.append(phone)
                     # 添加进 dialplan 队列
-                    self._dialplan_queue.put("dialplan", phone)
+                    # self._dialplan_queue.put("dialplan", phone)
             return {
                 "task_id": task.id,
                 "dialplans": dialplans,

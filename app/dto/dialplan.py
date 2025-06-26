@@ -11,8 +11,9 @@ class PutDialplanDto(BaseModel):
     status: str
 
 class DialplanStatusDto(BaseModel):
-    account_id: int
+    phone: str
     status: str
+    account_id: int
 
 class CreateDialplanResponseDto(BaseModel):
     id: int

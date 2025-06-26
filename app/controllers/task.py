@@ -1,7 +1,5 @@
 from litestar import Controller, get, post, delete, put, Response, Request
 from litestar.status_codes import HTTP_200_OK
-from app.services.account import AccService
-from app.dto.task import CreateAccountDto, PutAccDto
 from app.utils.jsonify import jsonify
 from app.utils.logger import logger
 

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 class DialplanStatus:
     Free = "free"
+    Queued = "queued"
     Processing = "processing"
     Finish = "finish"
 
