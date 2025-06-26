@@ -17,12 +17,15 @@ class AccountRepository:
     async def create_account(self, data: CreateAccountDto) -> tuple[dict, str]:
         accounts = []
         try:
+            now = datetime.now()
+            expired_at = now + timedelta(seconds=120)
             async with self._db_session.begin():
                 for acc in data.account:
                     account = Account(
                         host=acc.host,
                         name=acc.name,
                         pwd=acc.pwd,
+                        expired_at=expired_at
                     )
                     self._db_session.add(account)
                     accounts.append(CreateAccountResponseDto.model_validate(account))
@@ -36,6 +39,17 @@ class AccountRepository:
             delete(Account).where(Account.id == id)
         )
         return result.rowcount > 0
+
+    async def update_account_status(self, id: int, _status: str) -> bool:
+        stmt = (
+            update(Account)
+            .where(Account.id == id)
+            .values(status = _status)
+        )
+        result = await self._db_session.execute(stmt)
+        if result.rowcount == 0:
+            return False
+        return True
         
     async def get_free_account(self, count: int) -> tuple[dict, str]:
         """
@@ -62,10 +76,8 @@ class AccountRepository:
             if not accounts:
                 return None, "无空闲账户"
             # 更新账号状态为占用，更新账号过期时间
-            expires_at = now + timedelta(minutes=30)
             for account in accounts:
                 account.status = AccountStatus.Used
-                account.expired_at = expires_at
 
             accounts_dto = [GetAccountResponseDto.model_validate(acc) for acc in accounts]
             return {
@@ -89,22 +101,6 @@ class AccountRepository:
             logger.error(e)
             return None, f"获取账户失败 {e}"
         
-    async def update_account_status(self, account_id: int, status: str) -> tuple[dict, str]:
-        """
-        更新账号状态
-        """
-        try:
-            await self._db_session.execute(
-                update(Account)
-                .where(Account.id == account_id)
-                .values(status=status)
-                .execution_options(synchronize_session="fetch")
-            )
-            return {"account_id": account_id, "status": status}
-        except Exception as e:
-            logger.error(e)
-            return None, f"更新账号状态失败 {e}"
-
 
 async def provide_account_repository(db_session: AsyncSession) -> AsyncGenerator[AccountRepository, None]:
     yield AccountRepository(db_session)

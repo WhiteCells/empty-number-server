@@ -24,7 +24,7 @@ class ClientService:
     async def get_client_by_id(self, id: int) -> tuple[dict, str]:
         res = await self._client_repository.get_client_by_id(id)
         if not res:
-            return {}, "Client not found"
+            return {}, "客户端不存在"
         return res, ""
 
     # voip
@@ -34,11 +34,11 @@ class ClientService:
     async def heartbeat(self, client_id: str) -> tuple[dict, str]:
         # 客户端是否存在
         if not await self.get_client_by_id(client_id):
-            return {}, "client 不存在"
+            return {}, "客户端不存在"
         res = await self._client_repository.heartbeat(client_id)
         if res:
             return {"timestamp": time.time()}, None  
-        return {}, "Client not found"
+        return {}, "客户端不存在"
 
 async def provide_client_service(
         client_repository: ClientRepository,

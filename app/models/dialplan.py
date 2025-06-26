@@ -33,3 +33,4 @@ class Dialplan(Base):
 
     task_id: Mapped[int] = mapped_column(ForeignKey("task.id"))
     task: Mapped["Task"] = relationship("Task", back_populates="dialplans")
+

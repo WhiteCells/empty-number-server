@@ -7,3 +7,5 @@
 *.pyc
 /logs
 /uploads
+/redis-cluster
+/alembic/versions/*.py

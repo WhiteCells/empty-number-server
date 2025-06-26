@@ -31,12 +31,12 @@ class ApiController(Controller):
         res, msg = await account_service.get_free_account(client_id)
         return jsonify(200, res, msg)
 
-    @put(path="/account/reg_status/{client_id:str}", status_code=HTTP_200_OK)
+    @put(path="/account/status/{client_id:str}", status_code=HTTP_200_OK)
     async def reg_status(self, client_id: str, data: PutAccountRegStatusDto, account_service: AccountService) -> Response:
         """
         """
-        res, msg = await account_service.update_reg_status(data)
-        return jsonify(200, res, msg)
+        res = await account_service.update_reg_status(data)
+        return jsonify(200, res, "")
 
     @get(path="/dialplan/{client_id:str}", status_code=HTTP_200_OK)
     async def get_dialplan(self, client_id: str, dialplan_service: DialplanService) -> Response:
@@ -66,7 +66,7 @@ class ApiController(Controller):
         return jsonify(200, res, "")
     
     @post(path="/dial_wav/{client_id:str}", status_code=HTTP_200_OK)
-    async def dial_wav(self, client_id: str, request: Request) -> Response:
+    async def dial_wav(self, client_id: str, request: Request, dialplan_service: DialplanService) -> Response:
         """
         通话前音频文件接收接口
         """
@@ -74,11 +74,17 @@ class ApiController(Controller):
         if not filename:
             return jsonify(400, "", "filename is required")
         
-        if not os.path.exists(Config.UPLOADS_DIR):
-            os.makedirs(Config.UPLOADS_DIR)
-        
+        # 按下划线拆分文件名，找到 phone，根据 phone 找到 task ID，创建 task ID 目录
+        phone = filename.split("_")[0]
+
+        task_id = await dialplan_service.get_task_id(client_id, phone)
+        if not task_id:
+            return jsonify(400, "", "task_id is not found")
+
+        os.makedirs(f"{Config.UPLOADS_DIR}/{task_id}", exist_ok=True)
+
         body = await request.body()
-        file_path = os.path.join(Config.UPLOADS_DIR, filename)
+        file_path = os.path.join(Config.UPLOADS_DIR, str(task_id), filename)
 
         with open(file_path, "wb") as f:
             f.write(body)

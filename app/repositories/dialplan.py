@@ -1,14 +1,14 @@
+import datetime
 from typing import AsyncGenerator
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 from app.dto.dialplan import CreateDialplanDto, PutDialplanDto, CreateDialplanResponseDto
-from app.models.dialplan import Dialplan
-from app.utils.logger import logger
-import datetime
-from app.models.dialplan import DialplanStatus
+from app.models.dialplan import Dialplan, DialplanStatus
+from app.models.account import Account, AccountStatus
 from app.models.task import Task
 from app.utils.dialplan_queue import get_dialplan_queue
+from app.utils.logger import logger
 
 
 class DialplanRepository:
@@ -56,7 +56,24 @@ class DialplanRepository:
         dialplan = self._dialplan_queue.get("dialplan", threads_num)
         return {"dialplans": dialplan}, None
 
-    # async def update_dialplan_status(self, client_id: )
+    async def update_dialplan_status(self, phone: str, _status: str):
+        stmt = (
+            update(Dialplan)
+            .where(Dialplan.phone == phone)
+            .values(status = _status)
+        )
+        await self._db_session.execute(stmt)
+
+    async def get_task_id(self, client_id: str, phone: str) -> int:
+        result = await self._db_session.execute(
+            select(Dialplan)
+            .where(Dialplan.phone == phone)
+        )
+        dialplan = result.scalar_one_or_none()
+        if not dialplan:
+            return None
+        return dialplan.task_id
+
 
 async def provide_dialplan_repository(db_session: AsyncSession) -> AsyncGenerator[DialplanRepository, None]:
     yield DialplanRepository(db_session)
