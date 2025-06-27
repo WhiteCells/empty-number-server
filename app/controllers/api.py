@@ -75,9 +75,10 @@ class ApiController(Controller):
             return jsonify(400, "", "filename is required")
         
         # 按下划线拆分文件名，找到 phone，根据 phone 找到 task ID，创建 task ID 目录
-        phone = filename.split("_")[0]
+        dialplan_id = filename.split("_")[1]
+        # 还应该去拿 dialplan 的 id，因为 dialplan.phone 可能重复
 
-        task_id = await dialplan_service.get_task_id(client_id, phone)
+        task_id = await dialplan_service.get_task_id(client_id, int(dialplan_id))
         if not task_id:
             return jsonify(400, "", "task_id is not found")
 

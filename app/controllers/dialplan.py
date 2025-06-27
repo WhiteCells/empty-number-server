@@ -27,17 +27,6 @@ class DialplanController(Controller):
 
     @post(path="/dialplan/upload_file", status_code=HTTP_200_OK)
     async def upload_file(self, request: Request) -> Response:
-        """
-        Litestar 单文件上传大小有限制
-        todo: 后续改为前端分块后端合并
-        流式读取内容，使用 pandas 读取内容
-
-        格式:
-        dialplan
-        18920201010
-        18020201010
-        将计划输入
-        """
         form = await request.form()
         if "file" not in form:
             raise HTTPException(status_code=400, detail="请上传文件")
@@ -45,7 +34,7 @@ class DialplanController(Controller):
         if not isinstance(file, UploadFile):
             raise HTTPException(status_code=400, detail="请上传文件")
         content = await file.read()
-
+        # todo
         return jsonify(200, content, "上传成功")
     
     @delete(path="/dialplan/{id:int}", status_code=HTTP_200_OK)

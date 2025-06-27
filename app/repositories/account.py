@@ -44,7 +44,10 @@ class AccountRepository:
         stmt = (
             update(Account)
             .where(Account.id == id)
-            .values(status = _status)
+            .values(
+                status = _status,
+                expired_at = datetime.now() + timedelta(seconds=120),
+            )
         )
         result = await self._db_session.execute(stmt)
         if result.rowcount == 0:
