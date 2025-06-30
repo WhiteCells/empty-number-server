@@ -21,7 +21,7 @@ class AccountController(Controller):
     @delete(path="/account/{id:int}", status_code=HTTP_200_OK)
     async def delete_account(self, id: int, account_service: AccountService) -> Response:
         res, msg = await account_service.delete_account(id)
-        return jsonify(200, "", "")
+        return jsonify(200, res, msg)
 
     @put(path="/account/{id:int}", status_code=HTTP_200_OK)
     async def put_account(self, id: int, data: PutAccountDto) -> Response:

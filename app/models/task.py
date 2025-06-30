@@ -21,7 +21,7 @@ class Task(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="任务 ID")
     status: Mapped[str] = mapped_column(String(20), default=TaskStatus.Pending, comment="任务状态")
     return_url: Mapped[str] = mapped_column(String(255), nullable=False, comment="回调地址")
-    create_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="创建时间")
-    update_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="创建时间")
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, onupdate=datetime.now, comment="更新时间")
 
     dialplans: Mapped[list["Dialplan"]] = relationship("Dialplan", back_populates="task", cascade="all, delete-orphan")

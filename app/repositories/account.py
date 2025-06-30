@@ -7,6 +7,7 @@ from app.models.account import Account, AccountStatus
 from app.utils.logger import logger
 from app.utils.redisclient.cluster_client import get_redis_cluster_client
 from datetime import datetime, timedelta
+from app.utils.md5 import generate_account_md5
 
 
 class AccountRepository:
@@ -21,10 +22,19 @@ class AccountRepository:
             expired_at = now + timedelta(seconds=120)
             async with self._db_session.begin():
                 for acc in data.account:
+                    account_md5 = generate_account_md5(acc.name, acc.pwd, acc.host)
+                    result = await self._db_session.execute(
+                        select(Account)
+                        .where(Account.md5 == account_md5)
+                    )
+                    if result.scalars().first():
+                        logger.info(f"Account {acc.name} already exists")
+                        continue
                     account = Account(
                         host=acc.host,
                         name=acc.name,
                         pwd=acc.pwd,
+                        md5=account_md5,
                         expired_at=expired_at
                     )
                     self._db_session.add(account)
@@ -67,7 +77,7 @@ class AccountRepository:
                     or_(
                         Account.status == AccountStatus.Free,
                         and_(
-                            Account.status == AccountStatus.Used,
+                            # Account.status == AccountStatus.Used,
                             Account.expired_at != None,
                             Account.expired_at < now,
                         )
